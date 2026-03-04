@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brewed & Co. — Artisan Café</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5efe6;
+    --espresso: #2c1a0e;
+    --caramel: #c8843a;
+    --gold: #e8b86d;
+    --warm-white: #fdf8f2;
+    --mid-brown: #7a4f2d;
+    --light-brown: #d4a574;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--warm-white);
+    color: var(--espresso);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    background: rgba(44, 26, 14, 0.96);
+    backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 3rem;
+    border-bottom: 1px solid rgba(200,132,58,0.3);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: var(--gold);
+    letter-spacing: 1px;
+  }
+  .nav-logo span { font-style: italic; color: var(--light-brown); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--cream); text-decoration: none;
+    font-size: .9rem; font-weight: 400;
+    letter-spacing: .5px; transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta {
+    background: var(--caramel); color: white;
+    border: none; padding: .6rem 1.4rem;
+    border-radius: 2rem; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 500;
+    transition: background .2s, transform .1s;
+  }
+  .nav-cta:hover { background: var(--gold); transform: scale(1.03); }
+
+  /* ── HERO ── */
+  #home {
+    min-height: 100vh;
+    background: var(--espresso);
+    display: flex; align-items: center;
+    position: relative; overflow: hidden;
+    padding-top: 70px;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 70% 50%, rgba(200,132,58,.18) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(116,68,30,.3) 0%, transparent 50%);
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    padding: 4rem 3rem; max-width: 640px;
+    animation: fadeUp .9s ease both;
+  }
+  .hero-tag {
+    display: inline-block;
+    border: 1px solid var(--caramel);
+    color: var(--caramel); font-size: .75rem;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: .3rem .8rem; border-radius: 2rem; margin-bottom: 1.5rem;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    color: var(--cream); line-height: 1.1;
+    margin-bottom: 1.2rem;
+  }
+  .hero-title em { color: var(--gold); font-style: italic; }
+  .hero-sub {
+    color: var(--light-brown); font-size: 1.05rem;
+    font-weight: 300; line-height: 1.7;
+    margin-bottom: 2rem; max-width: 460px;
+  }
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--caramel); color: white;
+    padding: .8rem 2rem; border-radius: 2rem;
+    text-decoration: none; font-weight: 500;
+    transition: background .2s, transform .15s;
+  }
+  .btn-primary:hover { background: var(--gold); color: var(--espresso); transform: translateY(-2px); }
+  .btn-outline {
+    border: 1px solid var(--cream); color: var(--cream);
+    padding: .8rem 2rem; border-radius: 2rem;
+    text-decoration: none; font-weight: 400;
+    transition: background .2s;
+  }
+  .btn-outline:hover { background: rgba(255,255,255,.1); }
+
+  .hero-image-side {
+    position: absolute; right: 0; top: 0; bottom: 0;
+    width: 45%; display: flex; align-items: center; justify-content: center;
+    opacity: .12;
+    font-size: 22rem;
+    user-select: none; pointer-events: none;
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 5rem 3rem; }
+
+  .section-label {
+    font-size: .75rem; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--caramel);
+    margin-bottom: .5rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 1rem; line-height: 1.2;
+  }
+  .section-desc {
+    color: var(--mid-brown); max-width: 540px;
+    line-height: 1.7; margin-bottom: 2.5rem;
+  }
+
+  /* ── MENU ── */
+  #menu { background: var(--cream); }
+  .menu-tabs {
+    display: flex; gap: .5rem; flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+  .tab-btn {
+    padding: .5rem 1.4rem; border-radius: 2rem;
+    border: 1.5px solid var(--light-brown);
+    background: transparent; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: .9rem;
+    color: var(--mid-brown); transition: all .2s;
+  }
+  .tab-btn.active, .tab-btn:hover {
+    background: var(--espresso); color: var(--cream);
+    border-color: var(--espresso);
+  }
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+  .menu-card {
+    background: white; border-radius: 16px;
+    padding: 1.5rem; border: 1px solid rgba(200,132,58,.15);
+    transition: transform .2s, box-shadow .2s;
+    position: relative; overflow: hidden;
+  }
+  .menu-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(44,26,14,.1); }
+  .menu-card .emoji { font-size: 2.2rem; margin-bottom: .8rem; display: block; }
+  .menu-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; margin-bottom: .4rem;
+  }
+  .menu-card p { font-size: .85rem; color: var(--mid-brown); line-height: 1.5; }
+  .menu-card .price {
+    font-size: 1.1rem; font-weight: 500;
+    color: var(--caramel); margin-top: .8rem;
+  }
+  .add-btn {
+    position: absolute; bottom: 1.2rem; right: 1.2rem;
+    background: var(--espresso); color: white;
+    border: none; width: 32px; height: 32px;
+    border-radius: 50%; cursor: pointer; font-size: 1.2rem;
+    transition: background .2s; display: flex; align-items: center; justify-content: center;
+  }
+  .add-btn:hover { background: var(--caramel); }
+  .hidden { display: none; }
+
+  /* ── ORDER ONLINE ── */
+  #order { background: var(--espresso); color: var(--cream); }
+  #order .section-title { color: var(--cream); }
+  #order .section-desc { color: var(--light-brown); }
+  .order-form {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1.2rem; max-width: 700px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: .4rem; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-size: .8rem; letter-spacing: .5px; color: var(--light-brown); }
+  .form-group input, .form-group select, .form-group textarea {
+    padding: .75rem 1rem; border-radius: 10px;
+    border: 1px solid rgba(200,132,58,.3);
+    background: rgba(255,255,255,.07); color: var(--cream);
+    font-family: 'DM Sans', sans-serif; font-size: .95rem;
+    outline: none; transition: border .2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--caramel);
+  }
+  .form-group select option { background: var(--espresso); }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+  .cart-summary {
+    background: rgba(200,132,58,.1); border: 1px solid rgba(200,132,58,.25);
+    border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem;
+    max-width: 700px;
+  }
+  .cart-summary h4 { font-family: 'Playfair Display', serif; margin-bottom: .8rem; color: var(--gold); }
+  .cart-items { min-height: 40px; font-size: .9rem; color: var(--light-brown); }
+  .cart-item { display: flex; justify-content: space-between; padding: .3rem 0; border-bottom: 1px solid rgba(200,132,58,.15); }
+  .cart-total { display: flex; justify-content: space-between; margin-top: .8rem; font-weight: 500; color: var(--cream); }
+  .submit-order {
+    background: var(--caramel); color: white;
+    border: none; padding: .9rem 2.5rem;
+    border-radius: 2rem; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
+    transition: background .2s, transform .15s;
+    margin-top: 1rem;
+  }
+  .submit-order:hover { background: var(--gold); color: var(--espresso); transform: translateY(-2px); }
+
+  /* ── LOGIN MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(20,10,5,.7); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--warm-white); border-radius: 20px;
+    padding: 2.5rem; width: 100%; max-width: 420px;
+    position: relative; animation: fadeUp .3s ease;
+  }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: none; border: none; font-size: 1.4rem;
+    cursor: pointer; color: var(--mid-brown);
+  }
+  .modal h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: .3rem; }
+  .modal p { color: var(--mid-brown); font-size: .9rem; margin-bottom: 1.5rem; }
+  .modal-tabs { display: flex; gap: 0; margin-bottom: 1.5rem; border-radius: 10px; overflow: hidden; border: 1px solid var(--light-brown); }
+  .modal-tab {
+    flex: 1; padding: .6rem; text-align: center;
+    background: transparent; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: .9rem;
+    color: var(--mid-brown); transition: all .2s;
+  }
+  .modal-tab.active { background: var(--espresso); color: white; }
+  .modal .form-group input {
+    background: white; color: var(--espresso);
+    border: 1px solid rgba(44,26,14,.15);
+    width: 100%;
+  }
+  .modal .form-group { margin-bottom: .8rem; }
+  .modal .form-group label { color: var(--mid-brown); }
+  .modal-submit {
+    width: 100%; background: var(--espresso); color: white;
+    border: none; padding: .85rem; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem;
+    cursor: pointer; margin-top: .5rem; transition: background .2s;
+  }
+  .modal-submit:hover { background: var(--caramel); }
+  .modal-footer { text-align: center; margin-top: 1rem; font-size: .85rem; color: var(--mid-brown); }
+
+  /* ── ABOUT ── */
+  #about {
+    background: white;
+    display: flex; align-items: center; gap: 4rem; flex-wrap: wrap;
+  }
+  .about-text { flex: 1; min-width: 280px; }
+  .about-visual {
+    flex: 1; min-width: 280px;
+    background: var(--cream); border-radius: 20px;
+    aspect-ratio: 4/3; display: flex; align-items: center;
+    justify-content: center; font-size: 8rem;
+    border: 1px solid rgba(200,132,58,.2);
+  }
+  .hours-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: 1.5rem; }
+  .hours-row { display: flex; justify-content: space-between; font-size: .9rem; padding: .5rem 0; border-bottom: 1px solid var(--cream); }
+  .hours-row span:last-child { color: var(--caramel); font-weight: 500; }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--cream); }
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 700px; }
+  .contact-card {
+    background: white; border-radius: 14px;
+    padding: 1.5rem; border: 1px solid rgba(200,132,58,.15);
+  }
+  .contact-card .icon { font-size: 1.8rem; margin-bottom: .6rem; }
+  .contact-card h4 { font-family: 'Playfair Display', serif; margin-bottom: .3rem; }
+  .contact-card p { font-size: .88rem; color: var(--mid-brown); line-height: 1.5; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--espresso); color: var(--light-brown);
+    text-align: center; padding: 2rem 3rem;
+    font-size: .85rem;
+  }
+  footer .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; color: var(--gold); margin-bottom: .5rem;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--espresso); color: var(--cream);
+    padding: .8rem 1.5rem; border-radius: 2rem;
+    font-size: .9rem; z-index: 300;
+    animation: fadeUp .3s ease;
+    border-left: 3px solid var(--caramel);
+    display: none;
+  }
+  .toast.show { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 700px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .order-form { grid-template-columns: 1fr; }
+    .order-form .form-group.full { grid-column: 1; }
+    #about { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Brewed <span>& Co.</span></div>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#order">Order Online</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div style="position:relative">
+    <button class="nav-cta" id="auth-btn" onclick="openModal()">Sign In</button>
+    <div id="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + .5rem);background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.15);min-width:180px;overflow:hidden;z-index:200">
+      <button onclick="viewMyOrders()" style="width:100%;padding:.8rem 1.2rem;text-align:left;background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--espresso);border-bottom:1px solid var(--cream)">📋 My Orders</button>
+      <button onclick="logout()" style="width:100%;padding:.8rem 1.2rem;text-align:left;background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.9rem;color:#e05a5a">Sign Out</button>
+    </div>
+  </div>
+</nav>
+<style>#user-dropdown.open{display:block!important}</style>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-tag">☕ Est. 2018 · Artisan Café</div>
+    <h1 class="hero-title">Where Every Cup Tells a <em>Story</em></h1>
+    <p class="hero-sub">Hand-crafted espresso, seasonal pastries, and a warm corner for your best moments — right in the heart of the city.</p>
+    <div class="hero-btns">
+      <a href="#menu" class="btn-primary">Explore Menu</a>
+      <a href="#order" class="btn-outline">Order Online</a>
+    </div>
+  </div>
+  <div class="hero-image-side">☕</div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <div class="section-label">What We Serve</div>
+  <h2 class="section-title">Our Menu</h2>
+  <p class="section-desc">Carefully sourced ingredients, lovingly prepared. Every item made fresh daily.</p>
+
+  <div class="menu-tabs">
+    <button class="tab-btn active" onclick="filterMenu('all', this)">All</button>
+    <button class="tab-btn" onclick="filterMenu('coffee', this)">Coffee</button>
+    <button class="tab-btn" onclick="filterMenu('tea', this)">Tea & Drinks</button>
+    <button class="tab-btn" onclick="filterMenu('food', this)">Food</button>
+    <button class="tab-btn" onclick="filterMenu('pastry', this)">Pastries</button>
+  </div>
+
+  <div class="menu-grid" id="menu-grid"></div>
+</section>
+
+<!-- ORDER ONLINE -->
+<section id="order">
+  <div class="section-label">Skip the Queue</div>
+  <h2 class="section-title">Order Online</h2>
+  <p class="section-desc">Place your order in advance — pickup or delivery. We'll have it ready when you arrive.</p>
+
+  <div class="cart-summary">
+    <h4>🛒 Your Order</h4>
+    <div class="cart-items" id="cart-display">
+      <span style="opacity:.6">No items added yet. Click + on a menu item.</span>
+    </div>
+    <div class="cart-total" id="cart-total" style="display:none">
+      <span>Total</span><span id="total-amount">₹0.00</span>
+    </div>
+  </div>
+
+  <form class="order-form" onsubmit="placeOrder(event)">
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" placeholder="Jane Doe" required>
+    </div>
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input type="tel" placeholder="+1 555 000 0000" required>
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" placeholder="jane@email.com" required>
+    </div>
+    <div class="form-group">
+      <label>Order Type</label>
+      <select required>
+        <option value="">Select...</option>
+        <option>Pickup</option>
+        <option>Delivery</option>
+        <option>Dine In (Reserve Table)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Preferred Time</label>
+      <input type="time" required>
+    </div>
+    <div class="form-group">
+      <label>Payment Method</label>
+      <select>
+        <option>Pay at Counter</option>
+        <option>Credit / Debit Card</option>
+        <option>Apple Pay / Google Pay</option>
+      </select>
+    </div>
+    <div class="form-group full">
+      <label>Special Instructions</label>
+      <textarea placeholder="Allergies, customizations, table preferences…"></textarea>
+    </div>
+    <div class="form-group full">
+      <button type="submit" class="submit-order">Place My Order →</button>
+    </div>
+  </form>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-text">
+    <div class="section-label">Our Story</div>
+    <h2 class="section-title">A Café Built on Passion</h2>
+    <p class="section-desc">We started Brewed & Co. with a simple belief: coffee should be an experience, not just a habit. Every bean is single-origin, every recipe is tested obsessively, and every customer is family.</p>
+    <div class="hours-grid">
+      <div class="hours-row"><span>Mon – Fri</span><span>7:00 AM – 9:00 PM</span></div>
+      <div class="hours-row"><span>Saturday</span><span>8:00 AM – 10:00 PM</span></div>
+      <div class="hours-row"><span>Sunday</span><span>9:00 AM – 7:00 PM</span></div>
+      <div class="hours-row"><span>Holidays</span><span>10:00 AM – 6:00 PM</span></div>
+    </div>
+  </div>
+  <div class="about-visual">☕</div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">Find Us</div>
+  <h2 class="section-title">Get In Touch</h2>
+  <p class="section-desc">We'd love to hear from you — whether it's feedback, a reservation, or just a chat.</p>
+  <div class="contact-grid">
+    <div class="contact-card">
+      <div class="icon">📍</div>
+      <h4>Location</h4>
+      <p>42 Roast Lane, Brewtown<br>New York, NY 10001</p>
+    </div>
+    <div class="contact-card">
+      <div class="icon">📞</div>
+      <h4>Phone</h4>
+      <p>+1 (212) 555-BREW<br>Available during hours</p>
+    </div>
+    <div class="contact-card">
+      <div class="icon">✉️</div>
+      <h4>Email</h4>
+      <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6e060b0202012e0c1c0b190b0a0f000a0d01400d0103">[email&#160;protected]</a><br>We reply within 24hrs</p>
+    </div>
+    <div class="contact-card">
+      <div class="icon">📸</div>
+      <h4>Follow Us</h4>
+      <p>@brewedandco<br>Instagram · TikTok</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Brewed & Co.</div>
+  <p>© 2025 Brewed & Co. All rights reserved.</p>
+</footer>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2>Welcome Back</h2>
+    <p>Sign in to manage orders & reservations.</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchTab('login', this)">Sign In</button>
+      <button class="modal-tab" onclick="switchTab('register', this)">Register</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="login-form">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <button class="modal-submit" onclick="handleLogin()">Sign In</button>
+      <div class="modal-footer"><a href="#" style="color:var(--caramel)">Forgot password?</a></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="register-form" class="hidden">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" placeholder="Jane Doe">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="Create a strong password">
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" placeholder="Repeat password">
+      </div>
+      <button class="modal-submit" onclick="handleRegister()">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER HISTORY MODAL -->
+<div class="modal-overlay" id="orders-overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:520px;max-height:80vh;overflow-y:auto">
+    <button class="modal-close" onclick="document.getElementById('orders-overlay').classList.remove('open')">✕</button>
+    <h2>My Orders</h2>
+    <p>Your recent order history.</p>
+    <div id="orders-list" style="margin-top:1.2rem"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ══════════════════════════════════════════════════════════
+  //  CONFIG — change this to your backend URL
+  // ══════════════════════════════════════════════════════════
+  const API_BASE = 'http://localhost:5000/api';
+
+  // ══════════════════════════════════════════════════════════
+  //  AUTH STATE
+  // ══════════════════════════════════════════════════════════
+  let currentUser = null;
+  let authToken   = localStorage.getItem('cafe_token') || null;
+
+  // Restore session on load
+  if (authToken) restoreSession();
+
+  async function restoreSession() {
+    try {
+      const res = await apiFetch('/auth/me');
+      if (res.success) {
+        currentUser = res.user;
+        updateNavForUser();
+      } else {
+        authToken = null;
+        localStorage.removeItem('cafe_token');
+      }
+    } catch { /* server offline — silently skip */ }
+  }
+
+  function updateNavForUser() {
+    const btn = document.getElementById('auth-btn');
+    if (currentUser) {
+      btn.textContent = `👤 ${currentUser.name.split(' ')[0]}`;
+      btn.onclick = openUserMenu;
+    } else {
+      btn.textContent = 'Sign In';
+      btn.onclick = openModal;
+    }
+  }
+
+  function openUserMenu() {
+    const menu = document.getElementById('user-dropdown');
+    menu.classList.toggle('open');
+  }
+
+  function logout() {
+    authToken   = null;
+    currentUser = null;
+    localStorage.removeItem('cafe_token');
+    updateNavForUser();
+    document.getElementById('user-dropdown').classList.remove('open');
+    showToast('👋 Signed out successfully.');
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  API HELPER
+  // ══════════════════════════════════════════════════════════
+  async function apiFetch(path, options = {}) {
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+
+    const res = await fetch(API_BASE + path, { ...options, headers });
+    const data = await res.json();
+
+    if (!res.ok && !data.success) {
+      const msg = data.errors ? data.errors.map(e => e.msg).join(', ') : data.message;
+      throw new Error(msg || 'Something went wrong.');
+    }
+    return data;
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  MENU — fetched from /api/menu
+  // ══════════════════════════════════════════════════════════
+  let allMenuItems = [];   // full list from API
+  let cart = {};           // { mongoId: { ...item, qty } }
+
+  async function loadMenu(category = 'all') {
+    const grid = document.getElementById('menu-grid');
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--mid-brown);opacity:.6">Loading menu…</div>`;
+
+    try {
+      const url  = category === 'all' ? '/menu' : `/menu?category=${category}`;
+      const data = await apiFetch(url);
+      allMenuItems = data.items;
+      renderMenuItems(data.items);
+    } catch (err) {
+      // Fallback: show error state
+      grid.innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--mid-brown)">
+          <div style="font-size:2rem;margin-bottom:.5rem">⚠️</div>
+          <p>Could not load menu. Is the backend running?</p>
+          <small style="opacity:.6">${err.message}</small>
+        </div>`;
+    }
+  }
+
+  function renderMenuItems(items) {
+    const grid = document.getElementById('menu-grid');
+    if (!items.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--mid-brown);opacity:.6">No items in this category yet.</div>`;
+      return;
+    }
+    grid.innerHTML = items.map(item => `
+      <div class="menu-card">
+        <span class="emoji">${item.emoji || '☕'}</span>
+        <h3>${item.name}</h3>
+        <p>${item.description || ''}</p>
+        <div class="price">₹${item.price.toFixed(2)}</div>
+        <button class="add-btn" onclick="addToCart('${item._id}')" title="Add to order">+</button>
+      </div>
+    `).join('');
+  }
+
+  function filterMenu(cat, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    loadMenu(cat);
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  CART
+  // ══════════════════════════════════════════════════════════
+  function addToCart(id) {
+    const item = allMenuItems.find(m => m._id === id);
+    if (!item) return;
+    if (!cart[id]) cart[id] = { ...item, qty: 0 };
+    cart[id].qty++;
+    updateCartDisplay();
+    showToast(`${item.emoji || '☕'} ${item.name} added!`);
+  }
+
+  function removeFromCart(id) {
+    if (!cart[id]) return;
+    cart[id].qty--;
+    if (cart[id].qty <= 0) delete cart[id];
+    updateCartDisplay();
+  }
+
+  function updateCartDisplay() {
+    const display  = document.getElementById('cart-display');
+    const totalEl  = document.getElementById('cart-total');
+    const amountEl = document.getElementById('total-amount');
+    const entries  = Object.values(cart);
+
+    if (!entries.length) {
+      display.innerHTML = `<span style="opacity:.6">No items added yet. Click + on a menu item.</span>`;
+      totalEl.style.display = 'none';
+      return;
+    }
+
+    let total = 0;
+    display.innerHTML = entries.map(i => {
+      total += i.price * i.qty;
+      return `
+        <div class="cart-item">
+          <span>${i.emoji || '☕'} ${i.name} ×${i.qty}</span>
+          <span style="display:flex;align-items:center;gap:.6rem">
+            ₹${(i.price * i.qty).toFixed(2)}
+            <button onclick="removeFromCart('${i._id}')"
+              style="background:none;border:none;color:var(--light-brown);cursor:pointer;font-size:.9rem;line-height:1">✕</button>
+          </span>
+        </div>`;
+    }).join('');
+
+    totalEl.style.display = 'flex';
+    amountEl.textContent = '₹' + total.toFixed(2);
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  ORDER — POST /api/orders
+  // ══════════════════════════════════════════════════════════
+  async function placeOrder(e) {
+    e.preventDefault();
+
+    if (!Object.keys(cart).length) {
+      showToast('⚠️ Add items from the menu first!');
+      return;
+    }
+
+    const form = e.target;
+    const fields = form.querySelectorAll('input, select, textarea');
+    const [nameEl, phoneEl, emailEl, typeEl, timeEl, payEl, notesEl] = fields;
+
+    // Build payload
+    const payload = {
+      items: Object.values(cart).map(i => ({ menuItemId: i._id, quantity: i.qty })),
+      orderType:           typeEl.value,
+      preferredTime:       timeEl.value,
+      paymentMethod:       payEl.value,
+      specialInstructions: notesEl.value,
+    };
+
+    // Attach user or guest info
+    if (currentUser) {
+      // logged in — backend reads user from JWT
+    } else {
+      payload.guestName  = nameEl.value;
+      payload.guestEmail = emailEl.value;
+      payload.guestPhone = phoneEl.value;
+    }
+
+    const btn = form.querySelector('.submit-order');
+    btn.disabled    = true;
+    btn.textContent = 'Placing order…';
+
+    try {
+      const data = await apiFetch('/orders', {
+        method: 'POST',
+        body:   JSON.stringify(payload),
+      });
+
+      cart = {};
+      updateCartDisplay();
+      form.reset();
+      showToast(`🎉 Order #${data.orderId.toString().slice(-6).toUpperCase()} confirmed! Check your email.`);
+    } catch (err) {
+      showToast(`❌ ${err.message}`);
+    } finally {
+      btn.disabled    = false;
+      btn.textContent = 'Place My Order →';
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  AUTH MODAL
+  // ══════════════════════════════════════════════════════════
+  function openModal()  { document.getElementById('modal-overlay').classList.add('open'); }
+  function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  }
+
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.modal-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
+    document.getElementById('register-form').classList.toggle('hidden', tab !== 'register');
+    clearModalErrors();
+  }
+
+  function clearModalErrors() {
+    document.querySelectorAll('.modal-error').forEach(el => el.remove());
+  }
+
+  function showModalError(formId, message) {
+    clearModalErrors();
+    const el = document.createElement('p');
+    el.className = 'modal-error';
+    el.style.cssText = 'color:#e05a5a;font-size:.85rem;margin:.5rem 0 0;text-align:center';
+    el.textContent = message;
+    document.getElementById(formId).appendChild(el);
+  }
+
+  // ── Login ──────────────────────────────────────────────────
+  async function handleLogin() {
+    const form  = document.getElementById('login-form');
+    const email = form.querySelector('input[type="email"]').value.trim();
+    const pass  = form.querySelector('input[type="password"]').value;
+
+    if (!email || !pass) { showModalError('login-form', 'Please fill in all fields.'); return; }
+
+    const btn = form.querySelector('.modal-submit');
+    btn.disabled = true; btn.textContent = 'Signing in…';
+
+    try {
+      const data = await apiFetch('/auth/login', {
+        method: 'POST',
+        body:   JSON.stringify({ email, password: pass }),
+      });
+
+      authToken   = data.token;
+      currentUser = data.user;
+      localStorage.setItem('cafe_token', authToken);
+      updateNavForUser();
+      closeModal();
+      showToast(`👋 Welcome back, ${currentUser.name.split(' ')[0]}!`);
+    } catch (err) {
+      showModalError('login-form', err.message);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Sign In';
+    }
+  }
+
+  // ── Register ───────────────────────────────────────────────
+  async function handleRegister() {
+    const form    = document.getElementById('register-form');
+    const inputs  = form.querySelectorAll('input');
+    const name    = inputs[0].value.trim();
+    const email   = inputs[1].value.trim();
+    const pass    = inputs[2].value;
+    const confirm = inputs[3].value;
+
+    if (!name || !email || !pass || !confirm) {
+      showModalError('register-form', 'Please fill in all fields.'); return;
+    }
+    if (pass !== confirm) {
+      showModalError('register-form', 'Passwords do not match.'); return;
+    }
+    if (pass.length < 6) {
+      showModalError('register-form', 'Password must be at least 6 characters.'); return;
+    }
+
+    const btn = form.querySelector('.modal-submit');
+    btn.disabled = true; btn.textContent = 'Creating account…';
+
+    try {
+      const data = await apiFetch('/auth/register', {
+        method: 'POST',
+        body:   JSON.stringify({ name, email, password: pass }),
+      });
+
+      authToken   = data.token;
+      currentUser = data.user;
+      localStorage.setItem('cafe_token', authToken);
+      updateNavForUser();
+      closeModal();
+      showToast(`✅ Welcome, ${currentUser.name.split(' ')[0]}! Check your email for a welcome message.`);
+    } catch (err) {
+      showModalError('register-form', err.message);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Create Account';
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  ORDER HISTORY (logged-in users)
+  // ══════════════════════════════════════════════════════════
+  async function viewMyOrders() {
+    document.getElementById('user-dropdown').classList.remove('open');
+    const overlay = document.getElementById('orders-overlay');
+    const list    = document.getElementById('orders-list');
+
+    overlay.classList.add('open');
+    list.innerHTML = `<p style="opacity:.6;text-align:center;padding:2rem">Loading…</p>`;
+
+    try {
+      const data = await apiFetch('/orders/my');
+      if (!data.orders.length) {
+        list.innerHTML = `<p style="opacity:.6;text-align:center;padding:2rem">No orders yet. Place your first one!</p>`;
+        return;
+      }
+      list.innerHTML = data.orders.map(o => `
+        <div style="background:var(--cream);border-radius:12px;padding:1.2rem;margin-bottom:1rem;border:1px solid rgba(200,132,58,.2)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
+            <strong style="font-family:'Playfair Display',serif">#${o._id.toString().slice(-6).toUpperCase()}</strong>
+            <span style="background:var(--espresso);color:var(--cream);font-size:.75rem;padding:.2rem .7rem;border-radius:2rem">${o.status}</span>
+          </div>
+          <p style="font-size:.85rem;color:var(--mid-brown);margin-bottom:.4rem">${o.orderType} · ${o.preferredTime || 'ASAP'}</p>
+          <p style="font-size:.85rem">${o.items.map(i => `${i.name} ×${i.quantity}`).join(', ')}</p>
+          <p style="font-weight:500;color:var(--caramel);margin-top:.5rem">₹${o.totalAmount.toFixed(2)}</p>
+        </div>
+      `).join('');
+    } catch (err) {
+      list.innerHTML = `<p style="color:#e05a5a;text-align:center;padding:2rem">${err.message}</p>`;
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  TOAST
+  // ══════════════════════════════════════════════════════════
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  INIT
+  // ══════════════════════════════════════════════════════════
+  loadMenu();</script>
+</body>
+</html>
