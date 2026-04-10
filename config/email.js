@@ -1,17 +1,29 @@
 const nodemailer = require('nodemailer');
 
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// Only create transporter if email env vars are configured
+const isEmailConfigured =
+  process.env.EMAIL_HOST &&
+  process.env.EMAIL_USER &&
+  process.env.EMAIL_PASS;
+
+const transporter = isEmailConfigured
+  ? nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT || 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    })
+  : null;
 
 // ── Welcome email after registration ─────────────────────────────────────────
 const sendWelcomeEmail = async (to, name) => {
+  if (!transporter) {
+    console.log('📧 Email not configured — skipping welcome email.');
+    return;
+  }
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to,
@@ -40,6 +52,10 @@ const sendWelcomeEmail = async (to, name) => {
 
 // ── Order confirmation email ──────────────────────────────────────────────────
 const sendOrderConfirmation = async (to, name, order) => {
+  if (!transporter) {
+    console.log('📧 Email not configured — skipping order confirmation email.');
+    return;
+  }
   const itemRows = order.items.map(i =>
     `<tr>
        <td style="padding:6px 0">${i.name} ×${i.quantity}</td>
