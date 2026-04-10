@@ -4,10 +4,10 @@ const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
-const { sendWelcomeEmail } = require('../config/email');
+// const { sendWelcomeEmail } = require('../config/email'); // disabled - causes crash if not configured
 
 const signToken = (id) =>
-  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '7d' });
 
 // ── POST /api/auth/register ───────────────────────────────────────────────────
 router.post(
@@ -23,7 +23,6 @@ router.post(
       return res.status(400).json({ success: false, errors: errors.array() });
 
     const { name, email, password, phone } = req.body;
-
     try {
       const existing = await User.findOne({ email });
       if (existing)
@@ -32,8 +31,7 @@ router.post(
       const user = await User.create({ name, email, password, phone });
       const token = signToken(user._id);
 
-      // Send welcome email (non-blocking)
-      sendWelcomeEmail(email, name).catch(console.error);
+      // sendWelcomeEmail(email, name).catch(console.error); // disabled
 
       res.status(201).json({
         success: true,
@@ -60,14 +58,12 @@ router.post(
       return res.status(400).json({ success: false, errors: errors.array() });
 
     const { email, password } = req.body;
-
     try {
       const user = await User.findOne({ email }).select('+password');
       if (!user || !(await user.comparePassword(password)))
         return res.status(401).json({ success: false, message: 'Invalid email or password.' });
 
       const token = signToken(user._id);
-
       res.json({
         success: true,
         token,
