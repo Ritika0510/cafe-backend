@@ -1,18 +1,44 @@
 require('dotenv').config();
-const express=require('express');
-const cors=require('cors');
-const fs2=require('fs');
-const rateLimit=require('express-rate-limit');
-const connectDB=require('./config/db');
-const app=express();
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const rateLimit = require('express-rate-limit');
+const connectDB = require('./config/db');
+
+const app = express();
+
 connectDB();
-app.use(cors({origin:'*'}));
-app.use(express.json({limit:'10kb'}));
-app.use(rateLimit({windowMs:15*60*1000,max:100}));
-app.use('/api/auth',require('./routes/auth'));
-app.use('/api/menu',require('./routes/menu'));
-app.use('/api/orders',require('./routes/orders'));
-app.get('/api/health',(req,res)=>res.json({success:true,message:'API running'}));
-app.get('/',(req,res)=>{res.setHeader('Content-Type','text/html');res.send(fs2.readFileSync('C:/Users/lalit/Desktop/cafe/cafe-backend/cafe.html','utf8'));});
-app.get('/cafe.html',(req,res)=>{res.setHeader('Content-Type','text/html');res.send(fs2.readFileSync('C:/Users/lalit/Desktop/cafe/cafe-backend/cafe.html','utf8'));});
-app.listen(5000,()=>console.log('Server running on 5000'));
+
+app.use(cors({ origin: '*' }));
+app.use(express.json({ limit: '10kb' }));
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
+
+app.use('/api/auth',   require('./routes/auth'));
+app.use('/api/menu',   require('./routes/menu'));
+app.use('/api/orders', require('./routes/orders'));
+
+app.get('/api/health', (req, res) => {
+  res.json({ success: true, message: '☕ Brewed & Co. API is running.' });
+});
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'cafe.html'));
+});
+
+app.get('/cafe.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'cafe.html'));
+});
+
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).json({ success: false, message: err.message || 'Internal Server Error' });
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`\n☕ Brewed & Co. server running on http://localhost:${PORT}`);
+    console.log(`📋 API Docs available at http://localhost:${PORT}/api/health\n`);
+  });
+}
+
+module.exports = app;
