@@ -7,11 +7,14 @@ const connectDB = require('./config/db');
 
 const app = express();
 
+// Required for Vercel — allows express-rate-limit to work behind proxy
+app.set('trust proxy', 1);
+
 connectDB();
 
 app.use(cors({ origin: '*' }));
 app.use(express.json({ limit: '10kb' }));
-app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100, validate: { xForwardedForHeader: false } }));
 
 app.use('/api/auth',   require('./routes/auth'));
 app.use('/api/menu',   require('./routes/menu'));
