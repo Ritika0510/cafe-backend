@@ -8,7 +8,7 @@ const { sendOrderConfirmation } = require('../config/email');
 // ── POST /api/orders  — place an order (guest or logged-in) ──────────────────
 router.post('/', async (req, res) => {
   const {
-    items,           // [{ menuItemId, quantity }]
+    items,
     orderType,
     preferredTime,
     paymentMethod,
@@ -37,7 +37,6 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    // Fetch menu items and calculate total
     const orderItems = [];
     let totalAmount = 0;
 
@@ -72,15 +71,15 @@ router.post('/', async (req, res) => {
 
     const order = await Order.create(orderData);
 
-    // Send confirmation email (non-blocking)
-    const emailTo = userId
-      ? (await require('../models/User').findById(userId)).email
-      : guestEmail;
-    const emailName = userId
-      ? (await require('../models/User').findById(userId)).name
-      : guestName;
-
-    sendOrderConfirmation(emailTo, emailName, order).catch(console.error);
+    // Send confirmation email (non-blocking, safe to fail)
+    try {
+      const UserModel = require('../models/User');
+      const emailTo   = userId ? (await UserModel.findById(userId))?.email : guestEmail;
+      const emailName = userId ? (await UserModel.findById(userId))?.name  : guestName;
+      if (emailTo) sendOrderConfirmation(emailTo, emailName, order).catch(console.error);
+    } catch (emailErr) {
+      console.error('Email error (non-fatal):', emailErr.message);
+    }
 
     res.status(201).json({ success: true, orderId: order._id, status: order.status, totalAmount });
   } catch (err) {
@@ -94,7 +93,7 @@ router.get('/my', protect, async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user._id }).sort('-createdAt');
     res.json({ success: true, orders });
-  } catch {
+  } catch (err) {
     res.status(500).json({ success: false, message: 'Server error.' });
   }
 });
@@ -106,7 +105,7 @@ router.get('/', protect, adminOnly, async (req, res) => {
       .populate('user', 'name email')
       .sort('-createdAt');
     res.json({ success: true, count: orders.length, orders });
-  } catch {
+  } catch (err) {
     res.status(500).json({ success: false, message: 'Server error.' });
   }
 });
@@ -124,7 +123,7 @@ router.patch('/:id/status', protect, adminOnly, async (req, res) => {
     const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
     if (!order) return res.status(404).json({ success: false, message: 'Order not found.' });
     res.json({ success: true, order });
-  } catch {
+  } catch (err) {
     res.status(500).json({ success: false, message: 'Server error.' });
   }
 });
